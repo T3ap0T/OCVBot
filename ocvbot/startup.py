@@ -31,18 +31,19 @@ DISPLAY_HEIGHT = pag.size().height
 # Stats ----------------------------------------------------------------
 
 # The number of inventories a script has gone through.
-inventory = 0
+inventories = 0
+inventories_lifetime = 0
 # The number of items gathered, approximately.
-items = 0
+items_gathered = 0
+items_gathered_lifetime = 0
 # The amount of experience gained since the script started, approximately.
-experience = 0
+experience_gained = 0
+experience_gained_lifetime = 0
 # TODO:
 # The amount of experience gained since installing this package
 experience_per_hour = 0
 
-experience_lifetime = 0
-
 ore_exp_dict = {
-    'copper': 16.5,
-    'iron': 35.5
+    'copper ore': 16.5,
+    'iron ore': 35.5
 }

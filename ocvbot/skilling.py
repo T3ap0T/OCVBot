@@ -36,7 +36,7 @@ def miner_double_drop(rock1, rock2, ore, ore_type,
                     being mined, as it appears in the player's
                     inventory.
         ore_type (str): The type of ore being mined, used for generating
-                        stats. Available options are: "copper", "iron"
+                        stats.txt. Available options are: "copper", "iron"
         drop_sapphire (bool): Drop mined uncut sapphires, default is
                               True.
         drop_emerald (bool): Drop mined uncut emearalds, default is
@@ -144,7 +144,9 @@ def miner_double_drop(rock1, rock2, ore, ore_type,
                             behavior.drop_item(item='./needles/items/'
                                                     'clue-geode.png',
                                                track=False)
-                        print_stats(start.ore_exp_dict[ore_type], 'ore')
+                        print_stats(experience_per_item=start.
+                                    ore_exp_dict[ore_type],
+                                    item_name=ore_type)
                         return 0
                     elif inv_full == 1:
                         return 0
@@ -168,35 +170,76 @@ def miner_double_drop(rock1, rock2, ore, ore_type,
     return 0
 
 
-def print_stats(experience_per_item, item_type):
+def print_stats(experience_per_item, item_name):
     """
-    Prints a few basic stats about skilling experience.
+    Prints a few basic stats.txt about skilling experience.
 
     Args:
         experience_per_item (int): The amount of experience gained per
                                    item gathered.
-        item_type (str): The "type" of item, used to make logs pretty.
-                         Available item types are: "ore"
+        item_name (str): The name of the item being gathered, which is
+                         used to make the stats.txt pretty, available item
+                         names are: "iron ore" and "copper ore"
 
     Returns:
         Always returns 0
     """
+    import pickle
 
-    if item_type == 'ore':
-        item_type = 'ores'
+    #start.experience_gained = experience_per_item * start.items_gathered
+    infile = open('stats.txt', 'rb')
+    stats_lifetime = pickle.load(infile)
+    # unpack tuple
+    (start.items_gathered_lifetime,
+     start.experience_gained_lifetime,
+     start.inventories_lifetime) = stats_lifetime
+    print('stats lifetime is ', stats_lifetime)
 
-    experience_gained = experience_per_item * start.items
+    # Store new values
+    outfile = open('stats.txt', 'wb')
+    stats_lifetime = (start.items_gathered_lifetime,
+                      start.experience_gained_lifetime,
+                      start.inventories_lifetime)
+    pickle.dump(stats_lifetime, outfile)
+    outfile.close()
+    print('stats lifetime is ', stats_lifetime)
+
+
+    # retrieve new values
+    infile = open('stats.txt', 'rb')
+    stats_lifetime = pickle.load(infile)
+    # unpack tuple
+    (start.items_gathered_lifetime,
+     start.experience_gained_lifetime,
+     start.inventories_lifetime) = stats_lifetime
+    print('stats lifetime is ', stats_lifetime)
+
+    if item_name == 'iron ore' or item_name == 'copper_ore':
+        action = 'Mined'
+    else:
+        item_name = 'items'
+        action = 'Gathered'
+
     # TODO: exp per hour
     experience_per_hour = 0
 
-    vis.inventory = round(start.items / start.inven)
-
     print(
-        "############################################################### \n"
-        "Completed inventory #", start.inventory, "\n"
-        "Gathered ", start.items, " ", item_type, "\n"
-        "Gained ", experience_gained, " EXP (", experience_per_hour, ") \n"
-        "###############################################################"
+        '\n'
+        '\n'
+        '################################################################## \n'
+
+        'Inventories (run): ', start.inventories, '\n'
+                                                  'Inventories (lifetime): ', start.inventories_lifetime, '\n',
+
+        action, '(run): ', start.items_gathered, ' ', item_name, '\n',
+        action, '(lifetime): ', start.items_gathered_lifetime, ' ', item_name, '\n',
+
+        'XP gained (run):', start.experience_gained, ' (', experience_per_hour, ') \n'
+                                                                                'XP gained (lifetime):', start.experience_gained_lifetime, '\n'
+
+                                                                                                                                           '################################################################## \n'
+                                                                                                                                           '\n'
+                                                                                                                                           '\n'
     )
 
     return 0

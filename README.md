@@ -6,6 +6,3 @@
 ```
 # TODO
 ```
-
-*I am not responsible for how you use this software. This bot was created for
-educational and research purposes only.*
